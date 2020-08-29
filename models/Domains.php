@@ -59,4 +59,42 @@
 
 
         }
+
+        // Create Post
+        public function create() {
+            // Create sql query
+            $query = 'INSERT INTO ' .
+                $this->table . '
+              SET
+                domain = :domain,
+                panel = :panel,
+                isHosting = :isHosting,
+                isDomain = :isDomain';
+
+            // Prepare statement
+            $stmt = $this->conn->prepare($query);
+
+            // Clean data
+            $this->domain = htmlspecialchars(strip_tags($this->domain));
+            $this->panel = htmlspecialchars(strip_tags($this->panel));
+            $this->isHosting = htmlspecialchars(strip_tags($this->isHosting));
+            $this->isDomain = htmlspecialchars(strip_tags($this->isDomain));
+
+            // Bind data
+            $stmt->bindParam(':domain', $this->domain);
+            $stmt->bindParam(':panel', $this->panel);
+            $stmt->bindParam(':isHosting', $this->isHosting);
+            $stmt->bindParam(':isDomain', $this->isDomain);
+
+            // Execute query
+            if($stmt->execute()) {
+                return true;
+            }
+
+            // Print error if something goes wrong
+            printf("error: %s.\n", $stmt->error);
+
+            return false;
+
+        }
     }
